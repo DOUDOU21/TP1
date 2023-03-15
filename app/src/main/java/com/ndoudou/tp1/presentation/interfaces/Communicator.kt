@@ -1,4 +1,4 @@
-package com.ndoudou.tp1
+package com.ndoudou.tp1.presentation.interfaces
 
 import com.ndoudou.tp1.model.User
 

@@ -1,4 +1,4 @@
-package com.ndoudou.tp1
+package com.ndoudou.tp1.presentation.ui
 
 import android.Manifest
 import android.app.Activity
@@ -12,15 +12,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.ndoudou.tp1.presentation.interfaces.Communicator
+import com.ndoudou.tp1.R
 import com.ndoudou.tp1.model.User
 import de.hdodenhof.circleimageview.CircleImageView
 
 class InfosFragment : Fragment() {
-    private lateinit var communicator: Communicator
+
+    private var viewModel: UserViewModel? = null
+
+    //private lateinit var communicator: Communicator
+
     lateinit var mNomPrenomTextView : TextView
     lateinit var mDescriptionTextView : TextView
     lateinit var mLocationTextView : TextView
@@ -39,18 +46,21 @@ class InfosFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = layoutInflater.inflate(R.layout.fragment_infos, container, false)
-        communicator = activity as Communicator
+        //communicator = activity as Communicator
         init(view)
 
-        val user = arguments?.getSerializable("user") as? User
-        if (user != null) {
-            displayData(user)
-        }
+//        val user = arguments?.getSerializable("user") as? User
+//        if (user != null) {
+//            displayData(user)
+//        }
 
         return view
     }
 
     fun init(view : View){
+        viewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
+
+
         mNomPrenomTextView = view.findViewById<TextView>(R.id.text_view_nom_and_prenom)
         mDescriptionTextView = view.findViewById<TextView>(R.id.text_view_description)
         mLocationTextView = view.findViewById<TextView>(R.id.text_view_location)
@@ -60,13 +70,13 @@ class InfosFragment : Fragment() {
         mImageUser = view.findViewById<CircleImageView>(R.id.camera_user)
 
         mTelephoneTextView.setOnClickListener {
-            // Vérifier si la permission n'est pas accordée
+            // Check if permission is not granted
             if (checkSelfPermission(requireContext(),
                     Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
-                // Demander la permission
+                // Ask permission
                 requestPermissions(arrayOf(Manifest.permission.CALL_PHONE), 1)
             } else {
-                // La permission est déjà accordée, passer un appel téléphonique
+                // Permission is already granted, make a phone call
                 makePhoneCall()
             }
         }
@@ -84,43 +94,46 @@ class InfosFragment : Fragment() {
         }
 
         mImageUser.setOnClickListener {
-            // Vérifier si la permission n'est pas accordée
+            // Check if permission is not granted
             if (checkSelfPermission(requireContext(),
                     Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                // Demander la permission
+                // Ask permission
                 requestPermissions(arrayOf(Manifest.permission.CAMERA), PERMISSION_CODE)
             } else {
-                // La permission est déjà accordée, prendre une photo
+                // Permission is already granted, open image gallery
                 openCamera()
             }
         }
+
+        // observe the data changes using the LiveData. When the data is updated, update the UI with the new data.
+        viewModel!!.getData().observe(viewLifecycleOwner, Observer<User> { user ->
+            mNomPrenomTextView.text = user.nom+ " "+ user.prenom
+            mDescriptionTextView.text = user.description
+            mLocationTextView.text = user.pays+ ", "+ user.ville
+            mTelephoneTextView.text = user.tel
+            mPortableTextView.text = user.portable
+            mEmailTextView.text = user.email
+        })
+
     }
 
-    fun displayData(user : User){
-        mNomPrenomTextView.text = user.nom+ " "+ user.prenom
-        mDescriptionTextView.text = user.description
-        mLocationTextView.text = user.pays+ ", "+ user.ville
-        mTelephoneTextView.text = user.tel
-        mPortableTextView.text = user.portable
-        mEmailTextView.text = user.email
-    }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == 1) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // La permission a été accordée, passer un appel téléphonique
+                // Permission has been granted, make a phone call
                 makePhoneCall()
             } else {
-                // La permission a été refusée, afficher un message d'erreur
+                // Permission has been denied, display an error message
                 Toast.makeText(requireContext(), "Permission refusée", Toast.LENGTH_SHORT).show()
             }
         }
 
         if (requestCode == PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // La permission a été accordée, prendre une photo
+                // Permission has been granted, take a picture
                 openCamera()
             } else {
-                // La permission a été refusée, afficher un message d'erreur
+                // Permission has been denied, display an error message
                 Toast.makeText(requireContext(), "Permission refusée", Toast.LENGTH_SHORT).show()
             }
         }
@@ -147,4 +160,16 @@ class InfosFragment : Fragment() {
             mImageUser.setImageURI(imageUri)
         }
     }
+
+
+//    fun displayData(user : User){
+//        mNomPrenomTextView.text = user.nom+ " "+ user.prenom
+//        mDescriptionTextView.text = user.description
+//        mLocationTextView.text = user.pays+ ", "+ user.ville
+//        mTelephoneTextView.text = user.tel
+//        mPortableTextView.text = user.portable
+//        mEmailTextView.text = user.email
+//    }
+
+
 }

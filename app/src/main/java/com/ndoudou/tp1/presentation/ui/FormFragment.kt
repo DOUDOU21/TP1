@@ -1,27 +1,28 @@
-package com.ndoudou.tp1
+package com.ndoudou.tp1.presentation.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
+import com.ndoudou.tp1.R
 import com.ndoudou.tp1.model.User
 import de.hdodenhof.circleimageview.CircleImageView
 
-class FormulaireFragment : Fragment() {
-    private lateinit var communicator: Communicator
+class FormFragment : Fragment() {
+
+    private var userViewModel: UserViewModel? = null
+
+    //private lateinit var communicator: Communicator
+
     lateinit var mNomEditText : TextInputEditText
     lateinit var mPrenomEditText : TextInputEditText
     lateinit var mVilleEditText : TextInputEditText
@@ -50,9 +51,12 @@ class FormulaireFragment : Fragment() {
         return view
     }
 
-    fun init(view : View){
-        communicator = activity as Communicator
 
+
+    fun init(view : View){
+
+        userViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
+        //communicator = activity as Communicator
         mNomEditText = view.findViewById<TextInputEditText>(R.id.edit_text_nom)
         mPrenomEditText = view.findViewById<TextInputEditText>(R.id.edit_text_prenom)
         mVilleEditText = view.findViewById<TextInputEditText>(R.id.edit_text_ville)
@@ -66,21 +70,31 @@ class FormulaireFragment : Fragment() {
         mImageUser = view.findViewById<CircleImageView>(R.id.image_user)
 
         mValiderButton.setOnClickListener {
-            communicator.passDataCom(user = User(mNomEditText.text.toString(),mPrenomEditText.text.toString(), mEmailEditText.text.toString(),
+//            communicator.passDataCom(user = User(mNomEditText.text.toString(),mPrenomEditText.text.toString(), mEmailEditText.text.toString(),
+//                mVilleEditText.text.toString(), mPayeEditText.text.toString(), mFonctionEditText.text.toString(), mDescriptionEditText.text.toString(),
+//                mTelEditText.text.toString(), mPortablemEditText.text.toString(),null))
+
+            userViewModel?.setData(user = User(mNomEditText.text.toString(),mPrenomEditText.text.toString(), mEmailEditText.text.toString(),
                 mVilleEditText.text.toString(), mPayeEditText.text.toString(), mFonctionEditText.text.toString(), mDescriptionEditText.text.toString(),
                 mTelEditText.text.toString(), mPortablemEditText.text.toString(),null))
+
+            val fragmentManager = fragmentManager
+            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            fragmentTransaction.replace(R.id.container, InfosFragment())
+            fragmentTransaction.commit()
+
         }
 
         mImageUser.setOnClickListener{
-            // Vérifier si la permission n'est pas accordée
+            // Check if permission is not granted
             if (checkSelfPermission(requireContext(),
                     Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                // Demander la permission
+                // Ask permission
                 requestPermissions(
                     permissions,1
                 )
             } else {
-                // La permission est déjà accordée, ouvrir la galerie d'images
+                // Permission is already granted, open image gallery
                 openGallery()
             }
         }
@@ -89,10 +103,10 @@ class FormulaireFragment : Fragment() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == 1) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // La permission a été accordée, ouvrir la galerie d'images
+                // Permission has been granted, open image gallery
                 openGallery()
             } else {
-                // La permission a été refusée, afficher un message d'erreur
+                // Permission has been denied, display an error message
                 Toast.makeText(requireContext(), "Permission refusée", Toast.LENGTH_SHORT).show()
             }
         }
