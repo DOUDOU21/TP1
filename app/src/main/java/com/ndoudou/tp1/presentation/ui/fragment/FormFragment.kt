@@ -1,4 +1,4 @@
-package com.ndoudou.tp1.presentation.ui
+package com.ndoudou.tp1.presentation.ui.fragment
 
 import android.Manifest
 import android.content.Intent
@@ -7,15 +7,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.ndoudou.tp1.R
+import com.google.android.material.textfield.TextInputEditText
 import com.ndoudou.tp1.databinding.FragmentFormulaireBinding
 import com.ndoudou.tp1.domain.model.User
+import com.ndoudou.tp1.presentation.ui.activity.MainActivity
+import com.ndoudou.tp1.presentation.ui.UserViewModel
+
 class FormFragment : Fragment() {
 
     private val viewModel: UserViewModel by activityViewModels()
@@ -23,10 +24,8 @@ class FormFragment : Fragment() {
     private var _binding: FragmentFormulaireBinding? = null;
     private val binding get() = _binding!!;
 
-    lateinit var mActionbarBack: ImageView
-    lateinit var mTitleActionBar: TextView
 
-    val permissions = arrayOf(
+    private val permissions = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
@@ -48,10 +47,8 @@ class FormFragment : Fragment() {
 
     fun init(view: View) {
 
-        mActionbarBack = view.findViewById(R.id.actionbar_back)
-        mTitleActionBar = view.findViewById(R.id.actionbar_title)
-
-        mActionbarBack.setOnClickListener {
+        binding.actionBar.actionbarTitle.text = "Ajouter un utilisateur"
+        binding.actionBar.actionbarBack.setOnClickListener {
             val intent = Intent(activity, MainActivity::class.java)
             startActivity(intent)
         }
@@ -59,7 +56,7 @@ class FormFragment : Fragment() {
         binding.buttonValider.setOnClickListener {
             viewModel.insertUser(
                 User(
-                    2,
+                    0,
                     binding.editTextEmail.text.toString(),
                     binding.editTextNom.text.toString(),
                     binding.editTextPrenom.text.toString(),
@@ -73,7 +70,7 @@ class FormFragment : Fragment() {
                 )
             )
             Toast.makeText(requireContext(), "Ajouté avec succès", Toast.LENGTH_SHORT).show()
-
+            clearAllETextInputEditText(view as ViewGroup)
         }
 
         binding.imageUser.setOnClickListener {
@@ -115,4 +112,16 @@ class FormFragment : Fragment() {
         intent.type = "image/*"
         startActivityForResult(intent, 1)
     }
+
+    fun clearAllETextInputEditText(layout: ViewGroup) {
+        for (i in 0 until layout.childCount) {
+            val view = layout.getChildAt(i)
+            if (view is ViewGroup) {
+                clearAllETextInputEditText(view)
+            } else if (view is TextInputEditText) {
+                view.setText("")
+            }
+        }
+    }
+
 }

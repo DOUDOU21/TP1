@@ -17,7 +17,7 @@ interface UserDao{
     fun deleteUser(user: UserEntity)
 
     @Query("SELECT * FROM $USER_TABLE_NAME WHERE id=:id")
-    fun getUserById(id: Int): MutableList<UserEntity?>?
+    fun getUserById(id: Int): UserEntity?
 
     @Query("SELECT * FROM $USER_TABLE_NAME")
     suspend fun getUsers(): List<UserEntity>

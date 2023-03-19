@@ -24,15 +24,15 @@ class UserRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override fun getUserById(id: Int): User? {
+        return userDao.getUserById(id)?.toUser()
+    }
+
     override suspend fun getUsers(): List<User> {
         return userDao.getUsers().map { it.toUser() }
     }
 
     override suspend fun getPagedList(limit: Int, offset: Int): List<User> {
         return userDao.getPagedList(limit, offset).map { it.toUser() }
-    }
-
-    override fun getUserById(id: Long): LiveData<User?>? {
-        TODO("Not yet implemented")
     }
 }

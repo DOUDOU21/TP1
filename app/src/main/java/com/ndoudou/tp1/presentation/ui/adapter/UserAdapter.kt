@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ndoudou.tp1.domain.model.User
 import com.ndoudou.tp1.databinding.ItemContactBinding
+import com.ndoudou.tp1.presentation.interfaces.OnItemClickListener
 
-class UserAdapter() : PagingDataAdapter<User, UserAdapter.MainViewHolder>(UserDiffCallback()) {
+class UserAdapter(private val listener: OnItemClickListener) : PagingDataAdapter<User, UserAdapter.MainViewHolder>(UserDiffCallback()) {
     inner class MainViewHolder(val binding: ItemContactBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
@@ -25,6 +26,14 @@ class UserAdapter() : PagingDataAdapter<User, UserAdapter.MainViewHolder>(UserDi
             textViewEmail.text = user?.email
             textViewPhone.text = user?.tel
         }
+
+        holder.itemView.setOnClickListener {
+            if (user != null) {
+                listener.onItemClick(user)
+            }
+        }
+
+
     }
 
     class UserDiffCallback : DiffUtil.ItemCallback<User>() {

@@ -9,9 +9,12 @@ import androidx.paging.cachedIn
 import com.ndoudou.tp1.data.local.entity.UserEntity
 import com.ndoudou.tp1.data.repository.paging.UserShowLocalPagingSource
 import com.ndoudou.tp1.domain.model.User
+import com.ndoudou.tp1.domain.usecase.GetUser
 import com.ndoudou.tp1.domain.usecase.GetUsers
 import com.ndoudou.tp1.domain.usecase.InsertUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,10 +25,14 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val getUsersUseCase: GetUsers,
     private val insertUser: InsertUser,
+    private val getUser: GetUser
 ) : ViewModel() {
 
     private val _users: MutableStateFlow<List<User>?> = MutableStateFlow(null)
     val users: StateFlow<List<User>?> = _users
+
+    private val _user: MutableStateFlow<User?> = MutableStateFlow(null)
+    var user: MutableStateFlow<User?> = _user
 
     val data = Pager(
         PagingConfig(
@@ -43,7 +50,15 @@ class UserViewModel @Inject constructor(
         }
     }
 
-
+    fun getUserById(id: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                _user.value = getUser(id)
+            } catch (e: java.lang.Exception) {
+                Log.e("UserViewModel", e.message.toString())
+            }
+        }
+    }
 
 
 //    fun getUsers(){
@@ -55,7 +70,6 @@ class UserViewModel @Inject constructor(
 //            }
 //        }
 //    }
-
 
 
 //    private val userLiveData: MutableLiveData<User> = MutableLiveData()

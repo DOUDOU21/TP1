@@ -1,6 +1,7 @@
 package com.ndoudou.tp1.di
 
 import com.ndoudou.tp1.domain.repository.UserRepository
+import com.ndoudou.tp1.domain.usecase.GetUser
 import com.ndoudou.tp1.domain.usecase.GetUsers
 import com.ndoudou.tp1.domain.usecase.InsertUser
 import dagger.Module
@@ -20,5 +21,10 @@ object UserUseCaseModule {
     @Provides
     fun provideInsertUserUseCase(userRepository: UserRepository): InsertUser{
         return InsertUser(userRepository)
+    }
+
+    @Provides
+    fun provideGetUserByIdUseCase(userRepository: UserRepository) : GetUser{
+        return GetUser(userRepository)
     }
 }

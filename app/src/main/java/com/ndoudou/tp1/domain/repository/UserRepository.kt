@@ -8,7 +8,7 @@ interface UserRepository {
     suspend fun insertUser(user: User): Long
     fun updateUser(user: User)
     fun deleteUser(user: User)
-    fun getUserById(id: Long): LiveData<User?>?
+    fun getUserById(id: Int): User?
     suspend fun getUsers(): List<User>
     suspend fun getPagedList(limit: Int, offset: Int): List<User>
 }

@@ -1,4 +1,4 @@
-package com.ndoudou.tp1.presentation.ui
+package com.ndoudou.tp1.presentation.ui.fragment
 
 import android.Manifest
 import android.app.Activity
@@ -12,26 +12,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.lifecycle.ViewModelProvider
-import com.ndoudou.tp1.R
-import de.hdodenhof.circleimageview.CircleImageView
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import com.ndoudou.tp1.databinding.FragmentInfosBinding
+import com.ndoudou.tp1.presentation.ui.UserViewModel
+import com.ndoudou.tp1.presentation.ui.activity.MainActivity
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class InfosFragment : Fragment() {
 
-    private var viewModel: UserViewModel? = null
-
-    //private lateinit var communicator: Communicator
-
-    lateinit var mNomPrenomTextView : TextView
-    lateinit var mDescriptionTextView : TextView
-    lateinit var mLocationTextView : TextView
-    lateinit var mTelephoneTextView : TextView
-    lateinit var mPortableTextView : TextView
-    lateinit var mEmailTextView : TextView
-    lateinit var mImageUser : CircleImageView
+    private val viewModel: UserViewModel by activityViewModels()
+    private var _binding: FragmentInfosBinding? = null;
+    private val binding get() = _binding!!;
 
     private val PERMISSION_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 1001
@@ -42,31 +37,38 @@ class InfosFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = layoutInflater.inflate(R.layout.fragment_infos, container, false)
-        //communicator = activity as Communicator
+        _binding= FragmentInfosBinding.inflate(inflater,container,false);
+        val view = binding.root;
         init(view)
-
-//        val user = arguments?.getSerializable("user") as? User
-//        if (user != null) {
-//            displayData(user)
-//        }
-
         return view
     }
 
     fun init(view : View){
-        viewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
 
+        binding.actionBarInfo.actionbarBack.setOnClickListener {
+            val intent = Intent(activity, MainActivity::class.java)
+            startActivity(intent)
+        }
 
-        mNomPrenomTextView = view.findViewById<TextView>(R.id.text_view_nom_and_prenom)
-        mDescriptionTextView = view.findViewById<TextView>(R.id.text_view_description)
-        mLocationTextView = view.findViewById<TextView>(R.id.text_view_location)
-        mTelephoneTextView = view.findViewById<TextView>(R.id.text_view_telephone)
-        mPortableTextView = view.findViewById<TextView>(R.id.text_view_portable)
-        mEmailTextView = view.findViewById<TextView>(R.id.text_view_email)
-        mImageUser = view.findViewById<CircleImageView>(R.id.camera_user)
+        val idUser = arguments?.getInt("id")
+        if (idUser != null) {
+            viewModel.getUserById(idUser)
+        }
+        lifecycleScope.launch {
+            viewModel.user.collectLatest {
+                if (it != null) {
+                    binding.actionBarInfo.actionbarTitle.text = it.nom+ " " + it.prenom
+                    binding.textViewNomAndPrenom.text = it.nom+ " " + it.prenom
+                    binding.textViewDescription.text = it.description
+                    binding.textViewLocation.text = it.pays+" "+it.ville
+                    binding.textViewTelephone.text = it.tel
+                    binding.textViewPortable.text = it.portable
+                    binding.textViewEmail.text = it.email
+                }
+            }
+        }
 
-        mTelephoneTextView.setOnClickListener {
+        binding.textViewTelephone.setOnClickListener {
             // Check if permission is not granted
             if (checkSelfPermission(requireContext(),
                     Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
@@ -78,8 +80,8 @@ class InfosFragment : Fragment() {
             }
         }
 
-        mEmailTextView.setOnClickListener {
-            val email = mEmailTextView.text.toString()
+        binding.textViewEmail.setOnClickListener {
+            val email = binding.textViewEmail.text.toString()
             val subject = "Sujet de l'e-mail"
             val body = "Corps de l'e-mail"
             val intent = Intent(Intent.ACTION_SENDTO)
@@ -90,7 +92,7 @@ class InfosFragment : Fragment() {
             startActivity(chooser)
         }
 
-        mImageUser.setOnClickListener {
+        binding.cameraUser.setOnClickListener {
             // Check if permission is not granted
             if (checkSelfPermission(requireContext(),
                     Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
@@ -101,16 +103,6 @@ class InfosFragment : Fragment() {
                 openCamera()
             }
         }
-
-        // observe the data changes using the LiveData. When the data is updated, update the UI with the new data.
-//        viewModel!!.getData().observe(viewLifecycleOwner, Observer<User> { user ->
-//            mNomPrenomTextView.text = user.nom+ " "+ user.prenom
-//            mDescriptionTextView.text = user.description
-//            mLocationTextView.text = user.pays+ ", "+ user.ville
-//            mTelephoneTextView.text = user.tel
-//            mPortableTextView.text = user.portable
-//            mEmailTextView.text = user.email
-//        })
 
     }
 
@@ -136,7 +128,7 @@ class InfosFragment : Fragment() {
         }
     }
     private fun makePhoneCall() {
-        val phoneNumber = mTelephoneTextView.text
+        val phoneNumber = binding.textViewTelephone.text
         val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$phoneNumber"))
         startActivity(intent)
     }
@@ -154,19 +146,7 @@ class InfosFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == IMAGE_CAPTURE_CODE && resultCode == Activity.RESULT_OK) {
-            mImageUser.setImageURI(imageUri)
+            binding.cameraUser.setImageURI(imageUri)
         }
     }
-
-
-//    fun displayData(user : User){
-//        mNomPrenomTextView.text = user.nom+ " "+ user.prenom
-//        mDescriptionTextView.text = user.description
-//        mLocationTextView.text = user.pays+ ", "+ user.ville
-//        mTelephoneTextView.text = user.tel
-//        mPortableTextView.text = user.portable
-//        mEmailTextView.text = user.email
-//    }
-
-
 }
