@@ -12,8 +12,8 @@ class UserRepositoryImpl @Inject constructor(
     private val userDao: UserDao
     ) : UserRepository{
 
-    override suspend fun insertUser(user: UserEntity): Long {
-        return userDao.insertUser(user)
+    override suspend fun insertUser(user: User): Long {
+        return userDao.insertUser(user.toUser())
     }
 
     override fun updateUser(user: User) {

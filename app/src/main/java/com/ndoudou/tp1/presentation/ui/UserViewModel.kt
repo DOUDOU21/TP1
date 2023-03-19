@@ -37,6 +37,14 @@ class UserViewModel @Inject constructor(
         UserShowLocalPagingSource(getUsersUseCase)
     }.flow.cachedIn(viewModelScope)
 
+    fun insertUser(user: User) {
+        viewModelScope.launch {
+            insertUser.execute(user)
+        }
+    }
+
+
+
 
 //    fun getUsers(){
 //        viewModelScope.launch {
@@ -47,17 +55,6 @@ class UserViewModel @Inject constructor(
 //            }
 //        }
 //    }
-
-    fun insertUser(user: UserEntity) {
-        viewModelScope.launch {
-            insertUser.execute(user)
-        }
-    }
-
-
-
-
-
 
 
 

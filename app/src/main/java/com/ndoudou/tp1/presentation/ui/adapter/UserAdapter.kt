@@ -1,22 +1,14 @@
 package com.ndoudou.tp1.presentation.ui.adapter
 
-import com.ndoudou.tp1.R
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ndoudou.tp1.domain.model.User
-import androidx.recyclerview.widget.ListAdapter
 import com.ndoudou.tp1.databinding.ItemContactBinding
-import de.hdodenhof.circleimageview.CircleImageView
 
-//class UserAdapter() : ListAdapter<User, UserAdapter.ViewHolder>(UserDiffCallback()) {
 class UserAdapter() : PagingDataAdapter<User, UserAdapter.MainViewHolder>(UserDiffCallback()) {
-
     inner class MainViewHolder(val binding: ItemContactBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
@@ -34,6 +26,27 @@ class UserAdapter() : PagingDataAdapter<User, UserAdapter.MainViewHolder>(UserDi
             textViewPhone.text = user?.tel
         }
     }
+
+    class UserDiffCallback : DiffUtil.ItemCallback<User>() {
+        override fun areItemsTheSame(
+            oldItem: User,
+            newItem: User
+        ): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(
+            oldItem: User,
+            newItem: User
+        ): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+
+
+//class UserAdapter() : ListAdapter<User, UserAdapter.ViewHolder>(UserDiffCallback()) {
+
 //    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 //        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_contact, parent, false)
 //        return ViewHolder(view)
@@ -54,20 +67,4 @@ class UserAdapter() : PagingDataAdapter<User, UserAdapter.MainViewHolder>(UserDi
 //        val text_view_phone = itemView.findViewById<TextView>(R.id.text_view_phone)
 //        val text_view_email = itemView.findViewById<TextView>(R.id.text_view_email)
 //    }
-
-    class UserDiffCallback : DiffUtil.ItemCallback<User>() {
-        override fun areItemsTheSame(
-            oldItem: User,
-            newItem: User
-        ): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(
-            oldItem: User,
-            newItem: User
-        ): Boolean {
-            return oldItem == newItem
-        }
-    }
 }

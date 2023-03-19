@@ -5,7 +5,7 @@ import com.ndoudou.tp1.data.local.entity.UserEntity
 import com.ndoudou.tp1.domain.model.User
 
 interface UserRepository {
-    suspend fun insertUser(user: UserEntity): Long
+    suspend fun insertUser(user: User): Long
     fun updateUser(user: User)
     fun deleteUser(user: User)
     fun getUserById(id: Long): LiveData<User?>?

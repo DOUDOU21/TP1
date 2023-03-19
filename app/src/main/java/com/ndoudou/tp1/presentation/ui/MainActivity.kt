@@ -2,13 +2,13 @@ package com.ndoudou.tp1.presentation.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.activityViewModels
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ndoudou.tp1.R
-import com.ndoudou.tp1.data.local.entity.UserEntity
 import com.ndoudou.tp1.data.repository.paging.MainLoadStateAdapter
 import com.ndoudou.tp1.databinding.ActivityMainBinding
 import com.ndoudou.tp1.presentation.ui.adapter.UserAdapter
@@ -57,12 +57,8 @@ class MainActivity : AppCompatActivity() {
 //        viewModel.insertUser(UserEntity(8,"nloulou@gmail.com","Louou","Loubna","ville","pays","fonction","descriptin","tel","portable","null"))
 
 
-        //Load Users
 
-        //viewModel.getUsers()
-        System.out.println("Result: ")
-        //System.out.println("Result: ")
-
+//        viewModel.getUsers()
 //        lifecycleScope.launch{
 //            viewModel.users.collect{
 //                userAdapter.submitList(it)
@@ -76,9 +72,6 @@ class MainActivity : AppCompatActivity() {
                 userAdapter.submitData(it)
             }
         }
-
-
-
 
         newUser.setOnClickListener{
             newUser.hide();
