@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_item"
+    android:padding="16dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/image_contact"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/profile"
+        tools:ignore="MissingClass" />
+
+
+
+    <TextView
+        android:id="@+id/text_view_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/image_contact"
+        tools:text="Contact Name"
+        android:textSize="18sp"
+        android:textColor="#212121"
+        android:textStyle="bold"
+        android:layout_marginTop="9dp"/>
+
+
+    <TextView
+        android:id="@+id/text_view_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/text_view_name"
+        android:layout_toRightOf="@+id/image_contact"
+        tools:text="Contact Number"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        android:layout_marginTop="2dp"/>
+
+
+    <TextView
+        android:id="@+id/text_view_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_view_phone"
+        android:layout_toRightOf="@+id/image_contact"
+        tools:text="Email"
+        android:textColor="#A1A5A8"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        android:layout_marginTop="2dp"/>
+</RelativeLayout>

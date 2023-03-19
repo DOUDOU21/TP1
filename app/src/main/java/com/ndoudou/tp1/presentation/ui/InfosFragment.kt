@@ -15,11 +15,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.ndoudou.tp1.presentation.interfaces.Communicator
 import com.ndoudou.tp1.R
-import com.ndoudou.tp1.model.User
 import de.hdodenhof.circleimageview.CircleImageView
 
 class InfosFragment : Fragment() {
@@ -106,14 +103,14 @@ class InfosFragment : Fragment() {
         }
 
         // observe the data changes using the LiveData. When the data is updated, update the UI with the new data.
-        viewModel!!.getData().observe(viewLifecycleOwner, Observer<User> { user ->
-            mNomPrenomTextView.text = user.nom+ " "+ user.prenom
-            mDescriptionTextView.text = user.description
-            mLocationTextView.text = user.pays+ ", "+ user.ville
-            mTelephoneTextView.text = user.tel
-            mPortableTextView.text = user.portable
-            mEmailTextView.text = user.email
-        })
+//        viewModel!!.getData().observe(viewLifecycleOwner, Observer<User> { user ->
+//            mNomPrenomTextView.text = user.nom+ " "+ user.prenom
+//            mDescriptionTextView.text = user.description
+//            mLocationTextView.text = user.pays+ ", "+ user.ville
+//            mTelephoneTextView.text = user.tel
+//            mPortableTextView.text = user.portable
+//            mEmailTextView.text = user.email
+//        })
 
     }
 
