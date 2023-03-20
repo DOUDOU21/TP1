@@ -1,9 +1,7 @@
 package com.ndoudou.tp1.di
 
 import com.ndoudou.tp1.domain.repository.UserRepository
-import com.ndoudou.tp1.domain.usecase.GetUser
-import com.ndoudou.tp1.domain.usecase.GetUsers
-import com.ndoudou.tp1.domain.usecase.InsertUser
+import com.ndoudou.tp1.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,5 +24,15 @@ object UserUseCaseModule {
     @Provides
     fun provideGetUserByIdUseCase(userRepository: UserRepository) : GetUser{
         return GetUser(userRepository)
+    }
+
+    @Provides
+    fun provideDeleteUserByIdUseCase(userRepository: UserRepository) : DeleteUser{
+        return DeleteUser(userRepository)
+    }
+
+    @Provides
+    fun provideUpdateUserByIdUseCase(userRepository: UserRepository) : UpdateUser {
+        return UpdateUser(userRepository)
     }
 }

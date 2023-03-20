@@ -11,10 +11,10 @@ interface UserDao{
     suspend fun insertUser(user: UserEntity): Long
 
     @Update
-    fun updateUser(user: UserEntity)
+    suspend fun updateUser(user: UserEntity)
 
     @Delete
-    fun deleteUser(user: UserEntity)
+    suspend fun deleteUser(user: UserEntity)
 
     @Query("SELECT * FROM $USER_TABLE_NAME WHERE id=:id")
     fun getUserById(id: Int): UserEntity?

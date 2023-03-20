@@ -1,7 +1,7 @@
 package com.ndoudou.tp1.domain.model
 
 import com.ndoudou.tp1.data.local.entity.UserEntity
-
+import java.io.Serializable
 
 data class User(
     val id: Int = 0,
@@ -15,7 +15,7 @@ data class User(
     val tel: String,
     val portable: String,
     val photo: String
-): java.io.Serializable {
+): Serializable {
     fun toUser(): UserEntity {
         return UserEntity(
             id = id,

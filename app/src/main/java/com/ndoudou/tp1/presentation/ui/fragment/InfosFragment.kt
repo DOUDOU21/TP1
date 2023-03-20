@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.ndoudou.tp1.R
 import com.ndoudou.tp1.databinding.FragmentInfosBinding
 import com.ndoudou.tp1.presentation.ui.UserViewModel
 import com.ndoudou.tp1.presentation.ui.activity.MainActivity
@@ -67,6 +68,22 @@ class InfosFragment : Fragment() {
                 }
             }
         }
+
+
+        binding.delete.setOnClickListener {
+            viewModel.user.value?.let { it1 -> viewModel.deleteUser(it1)}
+            Toast.makeText(requireContext(), "Supprimé avec succès", Toast.LENGTH_SHORT).show()
+            val intent = Intent(activity, MainActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.update.setOnClickListener {
+            val fragmentTransaction = activity?.supportFragmentManager?.beginTransaction()
+            fragmentTransaction?.replace(R.id.container, FormFragment())
+            fragmentTransaction?.addToBackStack(null)
+            fragmentTransaction?.commit()
+        }
+
 
         binding.textViewTelephone.setOnClickListener {
             // Check if permission is not granted

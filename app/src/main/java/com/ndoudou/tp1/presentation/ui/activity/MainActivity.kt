@@ -20,9 +20,9 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnItemClickListener {
+
     private val viewModel: UserViewModel by viewModels()
     private val userAdapter= UserAdapter(this)
-
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     override fun onItemClick(item: User) {
-        System.out.println("Id: "+item.id+" Nom: "+item.nom)
         binding.newUser.hide();
         val infoFragment = InfosFragment()
         val data = Bundle().apply {

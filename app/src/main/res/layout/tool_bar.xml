@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
-            android:text="Utilisatrices"
+            android:text="Utilisateurs"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />

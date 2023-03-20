@@ -10,18 +10,18 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val userDao: UserDao
-    ) : UserRepository{
+) : UserRepository {
 
     override suspend fun insertUser(user: User): Long {
         return userDao.insertUser(user.toUser())
     }
 
-    override fun updateUser(user: User) {
-        TODO("Not yet implemented")
+    override suspend fun updateUser(user: User) {
+        userDao.updateUser(user.toUser())
     }
 
-    override fun deleteUser(user: User) {
-        TODO("Not yet implemented")
+    override suspend fun deleteUser(user: User) {
+        userDao.deleteUser(user.toUser())
     }
 
     override fun getUserById(id: Int): User? {
