@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.ndoudou.tp1.application.TpApplication
 import com.ndoudou.tp1.data.local.dao.UserDao
 import com.ndoudou.tp1.data.local.database.DataBase
+import com.ndoudou.tp1.data.remote.api.Api
+import com.ndoudou.tp1.utils.ApiBuilder
 import com.ndoudou.tp1.utils.NAME_DATABASE
 import dagger.Module
 import dagger.Provides
@@ -17,13 +19,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-//    @Singleton
-//    @Provides
-//    fun provideApplication(@ApplicationContext application: Context): TpApplication {
-//        return application as TpApplication
-//    }
-
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext application: Context): DataBase {
@@ -34,10 +29,23 @@ object AppModule {
         ).build()
     }
 
+    @Provides
+    @Singleton
+    fun provideApi(apiBuilder: ApiBuilder): Api {
+        return apiBuilder.builder(api = Api::class.java)
+    }
 
     @Provides
     @Singleton
-    fun provideUserDao(db: DataBase) : UserDao{
+    fun provideUserDao(db: DataBase): UserDao {
         return db.userDao()
     }
+
+
+//    @Singleton
+//    @Provides
+//    fun provideApplication(@ApplicationContext application: Context): TpApplication {
+//        return application as TpApplication
+//    }
+
 }

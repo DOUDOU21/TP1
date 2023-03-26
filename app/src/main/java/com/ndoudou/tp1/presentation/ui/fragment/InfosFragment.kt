@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,13 +16,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.ndoudou.tp1.R
 import com.ndoudou.tp1.databinding.FragmentInfosBinding
 import com.ndoudou.tp1.presentation.ui.UserViewModel
 import com.ndoudou.tp1.presentation.ui.activity.MainActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 class InfosFragment : Fragment() {
 
@@ -50,24 +54,51 @@ class InfosFragment : Fragment() {
             val intent = Intent(activity, MainActivity::class.java)
             startActivity(intent)
         }
+        viewModel.user.observe(viewLifecycleOwner, Observer {
+            binding.actionBarInfo.actionbarTitle.text = it.lastName+ " " + it.firstName
+            binding.textViewNomAndPrenom.text = it.lastName + " " + it.firstName
+            binding.textViewDescription.text = it.description
+            binding.textViewLocation.text = it.country + " " + it.city
+            binding.textViewTelephone.text = it.phone
+            binding.textViewPortable.text = it.portable
+            binding.textViewEmail.text = it.email
+            Glide.with(view.context).load(it?.avatar).into(binding.cameraUser)
+        })
 
-        val idUser = arguments?.getInt("id")
-        if (idUser != null) {
-            viewModel.getUserById(idUser)
-        }
-        lifecycleScope.launch {
-            viewModel.user.collectLatest {
-                if (it != null) {
-                    binding.actionBarInfo.actionbarTitle.text = it.nom+ " " + it.prenom
-                    binding.textViewNomAndPrenom.text = it.nom+ " " + it.prenom
-                    binding.textViewDescription.text = it.description
-                    binding.textViewLocation.text = it.pays+" "+it.ville
-                    binding.textViewTelephone.text = it.tel
-                    binding.textViewPortable.text = it.portable
-                    binding.textViewEmail.text = it.email
-                }
-            }
-        }
+//        val idUser = arguments?.getInt("id")
+//        if (idUser != null) {
+//            if(viewModel.getUserById(idUser) != null){
+//                val user = viewModel.user.value
+//                Log.d("User", user.toString())
+//                if (user != null) {
+//                    binding.actionBarInfo.actionbarTitle.text = user.lastName+ " " + user.firstName
+//                    binding.textViewNomAndPrenom.text = user.lastName + " " + user.firstName
+//                    binding.textViewDescription.text = user.description
+//                    binding.textViewLocation.text = user.country + " " + user.city
+//                    binding.textViewTelephone.text = user.phone
+//                    binding.textViewPortable.text = user.portable
+//                    binding.textViewEmail.text = user.email
+//                    Glide.with(view.context).load(user?.avatar).into(binding.cameraUser)
+//                }
+//
+//            }
+//        }
+
+
+//        lifecycleScope.launch {
+//            viewModel.user.collectLatest {
+//                if (it != null) {
+//                    binding.actionBarInfo.actionbarTitle.text = it.lastName+ " " + it.firstName
+//                    binding.textViewNomAndPrenom.text = it.lastName+ " " + it.firstName
+//                    binding.textViewDescription.text = it.description
+//                    binding.textViewLocation.text = it.country+" "+it.city
+//                    binding.textViewTelephone.text = it.phone
+//                    binding.textViewPortable.text = it.portable
+//                    binding.textViewEmail.text = it.email
+//                    Glide.with(view.context).load(it?.avatar).into(binding.cameraUser)
+//                }
+//            }
+//        }
 
 
         binding.delete.setOnClickListener {
@@ -146,7 +177,7 @@ class InfosFragment : Fragment() {
     }
     private fun makePhoneCall() {
         val phoneNumber = binding.textViewTelephone.text
-        val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$phoneNumber"))
+        val intent = Intent(Intent.ACTION_CALL, Uri.parse("phone:$phoneNumber"))
         startActivity(intent)
     }
 

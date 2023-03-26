@@ -5,4 +5,5 @@ import com.ndoudou.tp1.domain.repository.UserRepository
 
 class UpdateUser(private val userRepository: UserRepository) {
     suspend fun execute(user: User) = userRepository.updateUser(user)
+
 }

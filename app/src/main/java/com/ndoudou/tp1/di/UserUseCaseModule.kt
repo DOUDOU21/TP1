@@ -6,33 +6,28 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object UserUseCaseModule {
 
+    @Singleton
     @Provides
-    fun provideGetUsersUseCase(userRepository: UserRepository) : GetUsers{
-        return GetUsers(userRepository)
+    fun providesUserUseCases(repository: UserRepository): UserUseCases{
+        return UserUseCases(
+            getUser = GetUser(userRepository = repository),
+            getUsers = GetUsers(userRepository = repository),
+            insertUser = InsertUser(userRepository = repository),
+            deleteUser = DeleteUser(userRepository = repository),
+            updateUser = UpdateUser(userRepository = repository),
+            insertUsers = InsertUsers(userRepository = repository),
+            getUserRemoteKey = GetUserRemoteKey(userRepository = repository),
+            insertUserRemoteKeys = InsertUserRemoteKeys(userRepository = repository),
+            clearUserRemoteKeysTable = ClearUserRemoteKeysTable(userRepository = repository),
+            clearUserTable = ClearUserTable(userRepository = repository),
+            getUsersPage =  GetUsersPage(userRepository = repository)
+        )
     }
 
-    @Provides
-    fun provideInsertUserUseCase(userRepository: UserRepository): InsertUser{
-        return InsertUser(userRepository)
-    }
-
-    @Provides
-    fun provideGetUserByIdUseCase(userRepository: UserRepository) : GetUser{
-        return GetUser(userRepository)
-    }
-
-    @Provides
-    fun provideDeleteUserByIdUseCase(userRepository: UserRepository) : DeleteUser{
-        return DeleteUser(userRepository)
-    }
-
-    @Provides
-    fun provideUpdateUserByIdUseCase(userRepository: UserRepository) : UpdateUser {
-        return UpdateUser(userRepository)
-    }
 }

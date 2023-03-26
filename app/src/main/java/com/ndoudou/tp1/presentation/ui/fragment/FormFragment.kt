@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputEditText
 import com.ndoudou.tp1.databinding.FragmentFormulaireBinding
 import com.ndoudou.tp1.domain.model.User
@@ -52,23 +53,40 @@ class FormFragment : Fragment() {
     fun init(view: View) {
         binding.actionBar.actionbarTitle.text = "Ajouter un utilisateur"
         if (viewModel.user != null) {
-            lifecycleScope.launch {
-                viewModel.user.collectLatest {
-                    if (it != null) {
-                        binding.editTextEmail.setText(it.email)
-                        binding.editTextNom.setText(it.nom)
-                        binding.editTextPrenom.setText(it.prenom)
-                        binding.editTextVille.setText(it.ville)
-                        binding.editTextPays.setText(it.pays)
-                        binding.editTextFonction.setText(it.fonction)
-                        binding.editTextDescription.setText(it.description)
-                        binding.editTextTelephone.setText(it.tel)
-                        binding.editTextPortable.setText(it.portable)
-                        binding.actionBar.actionbarTitle.text = "Modifier un utilisateur"
-                    }
-
-                }
+            val user = viewModel.user.value
+            if (user != null) {
+                binding.editTextEmail.setText(user.email)
+                binding.editTextNom.setText(user.lastName)
+                binding.editTextPrenom.setText(user.firstName)
+                binding.editTextVille.setText(user.city)
+                binding.editTextPays.setText(user.country)
+                binding.editTextFonction.setText(user.function)
+                binding.editTextDescription.setText(user.description)
+                binding.editTextTelephone.setText(user.phone)
+                binding.editTextPortable.setText(user.portable)
+                Glide.with(view.context).load(user?.avatar).into(binding.imageUser)
+                binding.actionBar.actionbarTitle.text = "Modifier un utilisateur"
             }
+
+
+//            lifecycleScope.launch {
+//                viewModel.user.collectLatest {
+//                    if (it != null) {
+//                        binding.editTextEmail.setText(it.email)
+//                        binding.editTextNom.setText(it.lastName)
+//                        binding.editTextPrenom.setText(it.firstName)
+//                        binding.editTextVille.setText(it.city)
+//                        binding.editTextPays.setText(it.country)
+//                        binding.editTextFonction.setText(it.function)
+//                        binding.editTextDescription.setText(it.description)
+//                        binding.editTextTelephone.setText(it.phone)
+//                        binding.editTextPortable.setText(it.portable)
+//                        Glide.with(view.context).load(it?.avatar).into(binding.imageUser)
+//                        binding.actionBar.actionbarTitle.text = "Modifier un utilisateur"
+//                    }
+//
+//                }
+//            }
 
         }
 
@@ -96,7 +114,7 @@ class FormFragment : Fragment() {
                         binding.editTextDescription.text.toString(),
                         binding.editTextTelephone.text.toString(),
                         binding.editTextPortable.text.toString(),
-                        ""
+                        viewModel.user.value?.let { it.avatar} ?: ""
                     )
                 )
                 Toast.makeText(requireContext(), "Modifié avec succès", Toast.LENGTH_SHORT).show()
