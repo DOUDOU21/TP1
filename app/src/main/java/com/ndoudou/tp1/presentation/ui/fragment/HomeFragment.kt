@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ndoudou.tp1.R
 import com.ndoudou.tp1.data.repository.paging.MainLoadStateAdapter
@@ -19,6 +20,8 @@ import com.ndoudou.tp1.presentation.ui.adapter.UserAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+
+
 class HomeFragment : Fragment(), OnItemClickListener {
     private val viewModel: UserViewModel by activityViewModels()
     private val userAdapter= UserAdapter(this)
@@ -26,11 +29,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
     private val binding get() = _binding!!;
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false);
         val view = binding.root;
         init(view)
@@ -40,7 +39,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
         super.onDestroyView()
         _binding = null
     }
-    fun init(view: View) {
+    private fun init(view: View) {
 
         binding.userList.layoutManager = LinearLayoutManager(view.context)
         binding.userList.adapter = userAdapter.withLoadStateFooter(
@@ -55,21 +54,14 @@ class HomeFragment : Fragment(), OnItemClickListener {
         }
 
         binding.newUser.setOnClickListener {
-            val fragmentTransaction = activity?.supportFragmentManager?.beginTransaction()
-            fragmentTransaction?.replace(R.id.container, FormFragment())
-            fragmentTransaction?.addToBackStack(null)
-            fragmentTransaction?.commit()
+            findNavController().navigate(R.id.action_homeFragment_to_formFragment)
         }
 
     }
 
     override fun onItemClick(item: User) {
-        binding.newUser.hide();
-        val infoFragment = InfosFragment()
         viewModel.getUserById(item.id)
-        val fragmentTransaction = activity?.supportFragmentManager?.beginTransaction()
-        fragmentTransaction?.replace(R.id.container, infoFragment)
-        fragmentTransaction?.addToBackStack(null)
-        fragmentTransaction?.commit()
+        //val action = HomeFragmentDirections.actionHomeFragmentToInfosFragment()
+        findNavController().navigate(R.id.action_homeFragment_to_infosFragment)
     }
 }

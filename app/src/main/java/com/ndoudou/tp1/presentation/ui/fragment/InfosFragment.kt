@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.ndoudou.tp1.R
 import com.ndoudou.tp1.databinding.FragmentInfosBinding
@@ -48,12 +49,13 @@ class InfosFragment : Fragment() {
         return view
     }
 
-    fun init(view : View){
+    private fun init(view : View){
 
         binding.actionBarInfo.actionbarBack.setOnClickListener {
             val intent = Intent(activity, MainActivity::class.java)
             startActivity(intent)
         }
+
         viewModel.user.observe(viewLifecycleOwner, Observer {
             binding.actionBarInfo.actionbarTitle.text = it.lastName+ " " + it.firstName
             binding.textViewNomAndPrenom.text = it.lastName + " " + it.firstName
@@ -65,41 +67,6 @@ class InfosFragment : Fragment() {
             Glide.with(view.context).load(it?.avatar).into(binding.cameraUser)
         })
 
-//        val idUser = arguments?.getInt("id")
-//        if (idUser != null) {
-//            if(viewModel.getUserById(idUser) != null){
-//                val user = viewModel.user.value
-//                Log.d("User", user.toString())
-//                if (user != null) {
-//                    binding.actionBarInfo.actionbarTitle.text = user.lastName+ " " + user.firstName
-//                    binding.textViewNomAndPrenom.text = user.lastName + " " + user.firstName
-//                    binding.textViewDescription.text = user.description
-//                    binding.textViewLocation.text = user.country + " " + user.city
-//                    binding.textViewTelephone.text = user.phone
-//                    binding.textViewPortable.text = user.portable
-//                    binding.textViewEmail.text = user.email
-//                    Glide.with(view.context).load(user?.avatar).into(binding.cameraUser)
-//                }
-//
-//            }
-//        }
-
-
-//        lifecycleScope.launch {
-//            viewModel.user.collectLatest {
-//                if (it != null) {
-//                    binding.actionBarInfo.actionbarTitle.text = it.lastName+ " " + it.firstName
-//                    binding.textViewNomAndPrenom.text = it.lastName+ " " + it.firstName
-//                    binding.textViewDescription.text = it.description
-//                    binding.textViewLocation.text = it.country+" "+it.city
-//                    binding.textViewTelephone.text = it.phone
-//                    binding.textViewPortable.text = it.portable
-//                    binding.textViewEmail.text = it.email
-//                    Glide.with(view.context).load(it?.avatar).into(binding.cameraUser)
-//                }
-//            }
-//        }
-
 
         binding.delete.setOnClickListener {
             viewModel.user.value?.let { it1 -> viewModel.deleteUser(it1)}
@@ -109,10 +76,7 @@ class InfosFragment : Fragment() {
         }
 
         binding.update.setOnClickListener {
-            val fragmentTransaction = activity?.supportFragmentManager?.beginTransaction()
-            fragmentTransaction?.replace(R.id.container, FormFragment())
-            fragmentTransaction?.addToBackStack(null)
-            fragmentTransaction?.commit()
+            findNavController().navigate(R.id.action_infosFragment_to_formFragment)
         }
 
 

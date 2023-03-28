@@ -2,6 +2,8 @@ package com.ndoudou.tp1.presentation.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.ndoudou.tp1.R
 import com.ndoudou.tp1.databinding.ActivityMainBinding
 import com.ndoudou.tp1.presentation.ui.fragment.HomeFragment
@@ -17,8 +19,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.container, HomeFragment())
-                .commit()
     }
+//    override fun onSupportNavigateUp(): Boolean {
+//        val navController = findNavController(R.id.main_fragment)
+//        return navController.navigateUp() || super.onSupportNavigateUp()
+//    }
+
 }
